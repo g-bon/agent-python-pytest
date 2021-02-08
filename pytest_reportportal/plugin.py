@@ -76,7 +76,7 @@ def pytest_sessionstart(session):
                 endpoint=session.config.getini('rp_endpoint'),
                 uuid=getenv('RP_UUID') or session.config.getini('rp_uuid'),
                 log_batch_size=int(session.config.getini('rp_log_batch_size')),
-                is_skipped_an_issue=int(session.config.getini('rp_is_skipped_an_issue')),
+                is_skipped_an_issue=bool(session.config.getini('rp_is_skipped_an_issue')),
                 ignore_errors=bool(session.config.getini('rp_ignore_errors')),
                 custom_launch=session.config.option.rp_launch_id or None,
                 ignored_attributes=session.config.getini(
