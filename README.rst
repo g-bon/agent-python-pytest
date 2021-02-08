@@ -2,17 +2,17 @@
 agent-python-pytest
 ===================
 
-
-**Important:** this is BETA2 version. Please post issue in case if any found
-
-Pytest plugin for reporting test results of Pytest to the 'Reportal Portal'.
+Pytest plugin for reporting test results of Pytest to the Reportal Portal.
 
 * Usage
+* Installation
 * Configuration
+* Contribution
 * Examples
 * Launching
 * Send attachement (screenshots)
 * Troubleshooting
+* Integration with GA
 * Copyright Notice
 
 Usage
@@ -26,6 +26,22 @@ To install pytest plugin execute next command in a terminal:
 .. code-block:: bash
 
     pip install pytest-reportportal
+
+**IMPORTANT!**
+The latest version **does not** support Report Portal versions below 5.0.0.
+
+Specify the last one release of the client version 1 to install or update the client for other versions of Report Portal below 5.0.0:
+
+.. code-block:: bash
+
+    pip install pytest-reportportal~=1.0
+
+
+Contribution
+~~~~~~~~~~~~~
+
+All the fixes for the agent that supports Report Portal versions below 5.0.0 should go into the v1 branch.
+The master branch will store the code base for the agent for Report Portal versions 5 and above.
 
 
 Configuration
@@ -54,24 +70,27 @@ Example of :code:`pytest.ini`:
     rp_endpoint = http://192.168.1.10:8080
     rp_project = user_personal
     rp_launch = AnyLaunchName
-    rp_launch_tags = 'PyTest' 'Smoke'
+    rp_launch_attributes = 'PyTest' 'Smoke'
     rp_launch_description = 'Smoke test'
     rp_ignore_errors = True
-    rp_ignore_tags = 'xfail' 'usefixture'
+    rp_ignore_attributes = 'xfail' 'usefixture'
+
+- The :code:`rp_uuid` can also be set with the environment variable `RP_UUID`. This will override the value set for :code:`rp_uuid` in pytest.ini
 
 The following parameters are optional:
 
 - :code:`rp_launch = AnyLaunchName` - launch name (could be overridden
   by pytest --rp-launch option, default value is 'Pytest Launch')
-- :code:`rp_launch_tags = 'PyTest' 'Smoke'` - list of tags for launch
-- :code:`rp_tests_tags = 'PyTest' 'Smoke'` - list of tags that will be added for each item in the launch
+- :code:`rp_launch_id = xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` - id of the existing launch (the session will not handle the lifecycle of the given launch)
+- :code:`rp_launch_attributes = 'PyTest' 'Smoke' 'Env:Python3'` - list of attributes for launch
+- :code:`rp_parent_item_id = xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` - id of the existing test item for session to use as parent item for the tests (the session will not handle the lifecycle of the given test item)
+- :code:`rp_tests_attributes = 'PyTest' 'Smoke'` - list of attributes that will be added for each item in the launch
 - :code:`rp_launch_description = 'Smoke test'` - launch description (could be overridden
   by pytest --rp-launch-description option, default value is '')
 
 - :code:`rp_log_batch_size = 20` - size of batch log request
 - :code:`rp_ignore_errors = True` - Ignore Report Portal errors (exit otherwise)
-- :code:`rp_ignore_tags = 'xfail' 'usefixture'` - Ignore specified pytest markers
-- :code:`rp_skipped issue = False` - Consider skipped tests as issues, default `True`.
+- :code:`rp_ignore_attributes = 'xfail' 'usefixture'` - Ignore specified pytest markers
 - :code:`rp_hierarchy_dirs = True` - Enables hierarchy for tests directories, default `False`. Doesn't support 'xdist' plugin.
 - :code:`rp_hierarchy_module = True` - Enables hierarchy for module, default `True`. Doesn't support 'xdist' plugin.
 - :code:`rp_hierarchy_class = True` - Enables hierarchy for class, default `True`. Doesn't support 'xdist' plugin.
@@ -85,7 +104,7 @@ The following parameters are optional:
 
 
 If you like to override the above parameters from command line, or from CI environment based on your build, then pass
-- :code:`-o "rp_launch_tags=Smoke Tests"` during invocation.
+- :code:`-o "rp_launch_attributes=Smoke Tests"` during invocation.
 
 Examples
 ~~~~~~~~
@@ -106,7 +125,6 @@ in conftest.py:
 
     @pytest.fixture(scope="session")
     def rp_logger(request):
-        import logging
         logger = logging.getLogger(__name__)
         logger.setLevel(logging.DEBUG)
         # Create handler for Report Portal if the service has been
@@ -161,8 +179,8 @@ Plugin can report doc-strings of tests as :code:`descriptions`:
         """
         pass
 
-Pytest markers will be attached as :code:`tags` to Report Portal items.
-In the following example tags 'linux' and 'win32' will be used:
+Pytest markers will be attached as :code:`attributes` to Report Portal items.
+In the following example attributes 'linux' and 'win32' will be used:
 
 .. code-block:: python
 
@@ -173,7 +191,7 @@ In the following example tags 'linux' and 'win32' will be used:
     def test_one():
         pass
 
-If you don't want to attach specific markers, list them in :code:`rp_ignore_tags` parameter
+If you don't want to attach specific markers, list them in :code:`rp_ignore_attributes` parameter
 
 
 Launching
@@ -237,6 +255,17 @@ deactivate :code:`pytest_reportportal` plugin with command like:
 
     py.test -p no:pytest_reportportal ./tests
 
+
+Integration with GA
+-------------------
+ReportPortal is now supporting integrations with more than 15 test frameworks simultaneously. In order to define the most popular agents and plan the team workload accordingly, we are using Google analytics.
+
+ReportPortal collects information about agent name and its version only. This information is sent to Google analytics on the launch start. Please help us to make our work effective.
+If you still want to switch Off Google analytics, please change env variable the way below.
+
+.. code-block:: bash
+
+    export ALLURE_NO_ANALYTICS=1
 
 
 Copyright Notice
