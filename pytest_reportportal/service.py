@@ -112,6 +112,7 @@ class PyTestServiceClass(with_metaclass(Singleton, object)):
         self.ignore_errors = True
         self.ignored_attributes = []
         self.log_batch_size = 20
+        self.is_skipped_an_issue = True
         self.log_item_id = None
         self.parent_item_id = None
         self.rp = None
@@ -138,6 +139,7 @@ class PyTestServiceClass(with_metaclass(Singleton, object)):
                      project,
                      uuid,
                      log_batch_size,
+                     is_skipped_an_issue,
                      ignore_errors,
                      ignored_attributes,
                      verify_ssl=True,
@@ -154,6 +156,7 @@ class PyTestServiceClass(with_metaclass(Singleton, object)):
                 self.ignored_attributes = list(
                     set(ignored_attributes).union({'parametrize'}))
             self.log_batch_size = log_batch_size
+            self.is_skipped_an_issue = is_skipped_an_issue
             log.debug('ReportPortal - Init service: endpoint=%s, '
                       'project=%s, uuid=%s', endpoint, project, uuid)
             self.rp = ReportPortalService(
@@ -161,6 +164,7 @@ class PyTestServiceClass(with_metaclass(Singleton, object)):
                 project=project,
                 token=uuid,
                 log_batch_size=log_batch_size,
+                is_skipped_an_issue=is_skipped_an_issue,
                 retries=retries,
                 verify_ssl=verify_ssl,
                 launch_id=custom_launch,

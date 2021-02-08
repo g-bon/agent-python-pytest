@@ -89,6 +89,7 @@ The following parameters are optional:
   by pytest --rp-launch-description option, default value is '')
 
 - :code:`rp_log_batch_size = 20` - size of batch log request
+- :code:`rp_is_skipped_an_issue = True` -  Mark skipped tests as 'To Investigate' items
 - :code:`rp_ignore_errors = True` - Ignore Report Portal errors (exit otherwise)
 - :code:`rp_ignore_attributes = 'xfail' 'usefixture'` - Ignore specified pytest markers
 - :code:`rp_hierarchy_dirs = True` - Enables hierarchy for tests directories, default `False`. Doesn't support 'xdist' plugin.
